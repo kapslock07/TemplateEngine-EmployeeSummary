@@ -5,10 +5,13 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+
 const OUTPUT_DIR = path.resolve(__dirname, "output")
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+
+let employeeArr = [];
 
 
 // Write code to use inquirer to gather information about the development team members,
@@ -31,13 +34,32 @@ const questions = [
     },
     {
         type: "number",
-        message: "How many engineers will there be?",
-        name: "numEngineers"
+        message: "What is this person's office number?",
+        name: "managerOffice"
+    }
+];
+
+const generalQuestions = [
+    {
+        type: "input",
+        message: "What is the name of this employee?",
+        name: "employeeName"
     },
     {
-        type: "number",
-        message: "How many interns will there be?",
-        name: "numInterns"
+        type: "input",
+        message: "What is the employee's ID number?",
+        name: "employeeId"
+    },
+    {
+        type: "input",
+        message: "What is the employee's email address?",
+        name: "employeeEmail"
+    },
+    {
+        type: "list",
+        message: "What is the type of employee?",
+        name: "employeeType",
+        choices: ["Intern", "Engineer"]
     }
 ];
 
@@ -63,11 +85,64 @@ const internQ = [
     }
 ];
 
+const continueQ = [
+    {
+        type: "confirm",
+        message: "Do you want to add another employee?",
+        name: "continue"
+    }
+]
+
+function continuePrompt(){
+    inquirer
+        .prompt({
+            type: "confirm",
+            message: "Do you want to add another employee?",
+            name: "continue"
+        })
+        .then((results)=>{
+            if(results.continue){
+                addEmployee()
+            }
+            else {
+                console.log(employeeArr)
+                let html = render(employeesArr);
+                //fs.writefile
+                //html is the data, give it to writefile function along with the file name for the new file
+                //change console.logs to returns in all of the classes
+            }
+        })
+}
+
+function addEmployee(){
+    inquirer.prompt(generalQuestions)
+    .then(answers=>{
+        if(answers.employeeType === "Intern"){
+            inquirer.prompt(internQ)
+            .then(oneAnswer=>{
+                const intern = new Intern(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.internSchool);
+                employeeArr.push(intern);
+                continuePrompt();
+            })
+        }
+        else {
+            inquirer.prompt(engineerQ)
+            .then(oneAnswer=>{
+                const engineer = new Engineer(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.engineerGithub);
+                employeeArr.push(engineer);
+                continuePrompt();
+            })
+        }
+    })
+}
 
 function init() {
     inquirer
         .prompt(questions)
         .then((answers) => {
+            const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.managerOffice);
+            employeeArr.push(manager);
+            continuePrompt();
             // *******ask for for name/id/email for each employee as well as Q specific to their role******
         });
 }
