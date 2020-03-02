@@ -13,38 +13,66 @@ const render = require("./lib/htmlRenderer");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+const questions = [
+    {
+        type: "input",
+        message: "What is the name of your team manager?",
+        name: "managerName"
+    },
+    {
+        type: "input",
+        message: "What is the manager's ID number?",
+        name: "managerId"
+    },
+    {
+        type: "input",
+        message: "What is the manager's email address?",
+        name: "managerEmail"
+    },
+    {
+        type: "number",
+        message: "How many engineers will there be?",
+        name: "numEngineers"
+    },
+    {
+        type: "number",
+        message: "How many interns will there be?",
+        name: "numInterns"
+    }
+];
 
-inquirer
-    .prompt([
-        {
-            type: "input",
-            message: "What is the name of your team manager?",
-            name: "managerName"
-        },
-        {
-            type: "input",
-            message: "What is the manager's ID number?",
-            name: "managerId"
-        },
-        {
-            type: "input",
-            message: "What is the manager's email?",
-            name: "managerEmail"
-        },
-        {
-            type: "number",
-            message: "How many engineers will there be?",
-            name: "numEngineers"
-        },
-        {
-            type: "number",
-            message: "How many interns will there be?",
-            name: "numInterns"
-        }
-    ])
-    .then(answers => {
-        // Use user feedback for... whatever!!
-    });
+const managerQ = [
+    {
+        type: "number",
+        message: "What is this person's office number?",
+        name: "managerOffice"
+    }
+];
+const engineerQ = [
+    {
+        type: "input",
+        message: "What is this person's github username?",
+        name: "engineerGithub"
+    }
+];
+const internQ = [
+    {
+        type: "input",
+        message: "What school did/does this person attend?",
+        name: "internSchool"
+    }
+];
+
+
+function init() {
+    inquirer
+        .prompt(questions)
+        .then((answers) => {
+            // *******ask for for name/id/email for each employee as well as Q specific to their role******
+        });
+}
+init();
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
