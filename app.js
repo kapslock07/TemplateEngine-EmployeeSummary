@@ -93,47 +93,51 @@ const continueQ = [
     }
 ]
 
-function continuePrompt(){
+function continuePrompt() {
     inquirer
         .prompt({
             type: "confirm",
             message: "Do you want to add another employee?",
             name: "continue"
         })
-        .then((results)=>{
-            if(results.continue){
+        .then((results) => {
+            if (results.continue) {
                 addEmployee()
             }
             else {
                 console.log(employeeArr)
-                let html = render(employeesArr);
-                //fs.writefile
-                //html is the data, give it to writefile function along with the file name for the new file
-                //change console.logs to returns in all of the classes
+                let html = render(employeeArr);
+                fs.writeFile(__dirname + '/output/team.html', html, 'utf8',
+                    // callback function
+                    function (err) {
+                        if (err) throw err;
+                        // if no error
+                        console.log("Data is appended to file successfully.")
+                    });
             }
         })
 }
 
-function addEmployee(){
+function addEmployee() {
     inquirer.prompt(generalQuestions)
-    .then(answers=>{
-        if(answers.employeeType === "Intern"){
-            inquirer.prompt(internQ)
-            .then(oneAnswer=>{
-                const intern = new Intern(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.internSchool);
-                employeeArr.push(intern);
-                continuePrompt();
-            })
-        }
-        else {
-            inquirer.prompt(engineerQ)
-            .then(oneAnswer=>{
-                const engineer = new Engineer(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.engineerGithub);
-                employeeArr.push(engineer);
-                continuePrompt();
-            })
-        }
-    })
+        .then(answers => {
+            if (answers.employeeType === "Intern") {
+                inquirer.prompt(internQ)
+                    .then(oneAnswer => {
+                        const intern = new Intern(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.internSchool);
+                        employeeArr.push(intern);
+                        continuePrompt();
+                    })
+            }
+            else {
+                inquirer.prompt(engineerQ)
+                    .then(oneAnswer => {
+                        const engineer = new Engineer(answers.employeeName, answers.employeeId, answers.employeeEmail, oneAnswer.engineerGithub);
+                        employeeArr.push(engineer);
+                        continuePrompt();
+                    })
+            }
+        })
 }
 
 function init() {
@@ -143,7 +147,6 @@ function init() {
             const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.managerOffice);
             employeeArr.push(manager);
             continuePrompt();
-            // *******ask for for name/id/email for each employee as well as Q specific to their role******
         });
 }
 init();
